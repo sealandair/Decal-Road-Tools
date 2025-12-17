@@ -30,6 +30,7 @@ local startFade = im.FloatPtr(0.1)
 local endFade = im.FloatPtr(0.1)
 local materialIndex = im.IntPtr(0)
 local materials = {}
+local materialsLoaded = false
 
 local function getRoadMaterials()
   materials = {}
@@ -42,14 +43,17 @@ local function getRoadMaterials()
   end
   table.sort(materials)
   
-  -- Set default material if available
-  local defaultMat = "m_road_asphalt_edge_grass"
-  for i, matName in ipairs(materials) do
-    if matName == defaultMat then
-      materialIndex[0] = i - 1  -- Convert to 0-based index
-      savedParams.materialName = defaultMat
-      break
+  -- Set default material if available, but only once
+  if not materialsLoaded then
+    local defaultMat = "m_road_asphalt_edge_grass"
+    for i, matName in ipairs(materials) do
+      if matName == defaultMat then
+        materialIndex[0] = i - 1  -- Convert to 0-based index
+        savedParams.materialName = defaultMat
+        break
+      end
     end
+    materialsLoaded = true
   end
   
   return materials
